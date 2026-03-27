@@ -92,7 +92,7 @@ npm install
 # Start the local development server
 npm run dev
 
-# Package the Windows .exe locally
+# Package the Windows | Mac | Linux locally
 npm run build:win/mac/linux
 ~~~
 
