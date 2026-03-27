@@ -1,7 +1,7 @@
 <div align="center">
 <img alt="PixelSpace Logo" width="120" height="120" style="border-radius: 20px;" src="https://github.com/user-attachments/assets/4fa73555-1dc9-49b9-abcc-be15fedbd0f6" />
 
-  <h1>🌌 PixelSpace</h1>
+  <h1>PixelSpace</h1>
   <p><strong>Lightning-fast, strictly local batch image optimization for modern workflows.</strong></p>
 
   <p>
