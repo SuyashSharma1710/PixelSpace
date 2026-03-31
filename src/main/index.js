@@ -171,15 +171,37 @@ function createWindow() {
     width: 1180,
     height: 820,
     show: false,
-    autoHideMenuBar: true,
+    autoHideMenuBar: true, // Hides it but doesn't remove it entirely
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      devTools: false // 🚨 HARD LOCK: This disables DevTools at the engine level
     }
   })
 
+  // 1. Remove the menu bar completely (Professional look + Security)
+  mainWindow.removeMenu()
+
+  // 2. Prevent keyboard shortcuts (F12, Ctrl+Shift+I, etc.)
+  mainWindow.webContents.on('before-input-event', (event, input) => {
+    const isDevToolsKey = 
+      (input.control && input.shift && input.key.toLowerCase() === 'i') || 
+      (input.meta && input.alt && input.key.toLowerCase() === 'i') || 
+      input.key === 'F12'
+
+    if (isDevToolsKey) {
+      event.preventDefault()
+    }
+  })
+
+  // 3. Emergency Close if DevTools somehow opens
+  mainWindow.webContents.on('devtools-opened', () => {
+    mainWindow.webContents.closeDevTools()
+  })
+
   mainWindow.on('ready-to-show', () => mainWindow.show())
+
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'deny' }
