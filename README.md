@@ -40,7 +40,7 @@ Unlike web-based compressors, PixelSpace runs **100% locally** on your machine. 
 You do not need to compile the code to use PixelSpace! 
 
 1. Navigate to the [Releases](../../releases/latest) page.
-2. Download the latest `PixelSpace-Setup-1.0.0.exe` file.
+2. Download the latest `PixelSpace-Setup-1.0.2.exe` file.
 3. Double-click to install and start compressing!
 
 ## 🏗️ Directory Structure

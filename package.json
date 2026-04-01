@@ -1,7 +1,7 @@
 {
   "name": "PixelSpace",
-  "version": "1.0.0",
-  "description": "An Electron application with React",
+  "version": "1.0.2",
+  "description": "A high-performance, strictly local Electron desktop app that crushes heavy images into WebP/AVIF using a C++ processing engine.",
   "main": "./out/main/index.js",
   "author": "example.com",
   "homepage": "https://electron-vite.org",
