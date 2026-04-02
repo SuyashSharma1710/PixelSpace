@@ -4,7 +4,7 @@
   "license": "MIT",
   "description": "A high-performance, strictly local Electron desktop app that crushes heavy images into WebP/AVIF using a C++ processing engine.",
   "main": "./out/main/index.js",
-  "author": "example.com",
+  "author": "PixelSpace Team",
   "homepage": "https://electron-vite.org",
   "scripts": {
     "format": "prettier --write .",
