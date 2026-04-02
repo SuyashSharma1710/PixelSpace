@@ -172,7 +172,7 @@ function createWindow() {
     height: 820,
     show: false,
     autoHideMenuBar: true, // Hides it but doesn't remove it entirely
-    ...(process.platform === 'linux' ? { icon } : {}),
+    icon: icon,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
