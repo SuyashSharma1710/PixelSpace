@@ -46,7 +46,13 @@ function sanitizeOptions(options) {
   const outputDir = typeof options?.outputDir === 'string' && options.outputDir.trim().length > 0
       ? resolve(options.outputDir.trim()) : ''
 
-  return { quality, format: outputFormat, outputDir }
+  const parsedWidth = Number.parseInt(options?.width, 10)
+  const width = Number.isFinite(parsedWidth) && parsedWidth > 0 ? parsedWidth : null
+
+  const parsedHeight = Number.parseInt(options?.height, 10)
+  const height = Number.isFinite(parsedHeight) && parsedHeight > 0 ? parsedHeight : null
+
+  return { quality, format: outputFormat, outputDir, width, height }
 }
 
 function resolveOutputFormat(sourcePath, requestedFormat) {
@@ -147,6 +153,15 @@ async function optimizeImage(sourcePath, options) {
   const outputPath = await getUniqueOutputPath(outputDirectory, sourceName, outputExtension)
 
   let pipeline = sharp(sourcePath, { failOn: 'none' }).rotate()
+
+  if (options.width || options.height) {
+    const bothProvided = options.width && options.height
+    pipeline = pipeline.resize(options.width, options.height, {
+      fit: bothProvided ? 'fill' : 'inside',
+      withoutEnlargement: true
+    })
+  }
+
   pipeline = applyOutputFormat(pipeline, outputFormat, options.quality)
   await pipeline.toFile(outputPath)
 
@@ -166,8 +181,10 @@ async function optimizeImage(sourcePath, options) {
   }
 }
 
+let mainWindow = null
+
 function createWindow() {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1180,
     height: 820,
     show: false,
@@ -218,17 +235,26 @@ app.whenReady().then(() => {
   if (process.platform === 'win32') app.setAppUserModelId('com.pixelspace')
 
   ipcMain.handle('optimizer:select-inputs', async () => {
-    const selected = await dialog.showOpenDialog({
-      title: 'Select images or folders',
-      properties: ['openFile', 'openDirectory', 'multiSelections'],
+    const selected = await dialog.showOpenDialog(mainWindow, {
+      title: 'Select image files',
+      properties: ['openFile', 'multiSelections'],
       filters: [{ name: 'Images', extensions: ['jpg', 'jpeg', 'png', 'webp', 'avif', 'tif', 'tiff'] }]
     })
     if (selected.canceled) return []
     return normalizeInputPaths(selected.filePaths)
   })
 
+  ipcMain.handle('optimizer:select-folder-input', async () => {
+    const selected = await dialog.showOpenDialog(mainWindow, {
+      title: 'Select a folder to process',
+      properties: ['openDirectory']
+    })
+    if (selected.canceled || selected.filePaths.length === 0) return []
+    return normalizeInputPaths(selected.filePaths)
+  })
+
   ipcMain.handle('optimizer:select-output-folder', async () => {
-    const selected = await dialog.showOpenDialog({
+    const selected = await dialog.showOpenDialog(mainWindow, {
       title: 'Select output folder',
       properties: ['openDirectory', 'createDirectory']
     })
@@ -274,7 +300,13 @@ app.whenReady().then(() => {
     const successCount = results.filter((result) => result.status === 'success').length
     const failureCount = results.length - successCount
 
-    return { total: results.length, successCount, failureCount, results }
+    // Determine the actual output directory that was used so the frontend can open it
+    const firstSuccess = results.find((r) => r.status === 'success')
+    const outputDirectory = firstSuccess
+      ? parse(firstSuccess.outputPath).dir
+      : options.outputDir || ''
+
+    return { total: results.length, successCount, failureCount, results, outputDirectory }
   })
 
   createWindow()

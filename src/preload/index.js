@@ -2,6 +2,7 @@ import { contextBridge, ipcRenderer, webUtils } from 'electron'
 
 const api = {
   selectInputs: () => ipcRenderer.invoke('optimizer:select-inputs'),
+  selectFolderInput: () => ipcRenderer.invoke('optimizer:select-folder-input'),
   selectOutputFolder: () => ipcRenderer.invoke('optimizer:select-output-folder'),
   openPath: (targetPath) => ipcRenderer.invoke('optimizer:open-path', targetPath),
   optimizeImages: (payload) => ipcRenderer.invoke('optimizer:optimize-images', payload),

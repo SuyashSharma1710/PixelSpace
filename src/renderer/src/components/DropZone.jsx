@@ -1,5 +1,42 @@
 import { useState } from 'react'
 
+const VALID_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'avif', 'tif', 'tiff'])
+
+function isValidImageEntry(name) {
+  if (!name || name.startsWith('.')) return false 
+  const ext = name.split('.').pop().toLowerCase()
+  return VALID_EXTENSIONS.has(ext)
+}
+
+
+async function readAllEntries(reader) {
+  const allEntries = []
+  while (true) {
+    const batch = await new Promise((resolve, reject) => {
+      reader.readEntries(resolve, reject)
+    })
+    if (batch.length === 0) break
+    allEntries.push(...batch)
+  }
+  return allEntries
+}
+
+
+async function collectPathsFromEntry(entry, collectedPaths) {
+  if (entry.isFile) {
+    if (!isValidImageEntry(entry.name)) return
+    const file = await new Promise((resolve, reject) => entry.file(resolve, reject))
+    const absolutePath = window.electronAPI.getFilePath(file)
+    if (absolutePath) collectedPaths.push(absolutePath)
+  } else if (entry.isDirectory) {
+    const reader = entry.createReader()
+    const children = await readAllEntries(reader)
+    for (const child of children) {
+      await collectPathsFromEntry(child, collectedPaths)
+    }
+  }
+}
+
 function DropZone({ onPathsAdded, onBrowse, disabled }) {
   const [isDragOver, setIsDragOver] = useState(false)
 
@@ -15,31 +52,29 @@ function DropZone({ onPathsAdded, onBrowse, disabled }) {
     setIsDragOver(false)
   }
 
-  const handleDrop = (e) => {
+  const handleDrop = async (e) => {
     e.preventDefault()
     e.stopPropagation()
     setIsDragOver(false)
 
     if (disabled) return
 
-    const files = e.dataTransfer.files
-    const droppedPaths = []
+    const items = Array.from(e.dataTransfer.items)
+    const collectedPaths = []
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i]
-      
-      // Pass the file to our secure bridge to extract the hidden path!
-      const absolutePath = window.electronAPI.getFilePath(file)
-      
-      if (absolutePath) {
-        droppedPaths.push(absolutePath)
-      }
+    for (const item of items) {
+      if (item.kind !== 'file') continue
+
+      const entry = item.webkitGetAsEntry()
+      if (!entry) continue
+
+      await collectPathsFromEntry(entry, collectedPaths)
     }
 
-    if (droppedPaths.length > 0) {
-      onPathsAdded(droppedPaths)
+    if (collectedPaths.length > 0) {
+      onPathsAdded(collectedPaths)
     } else {
-      alert("Path extraction failed. Please check folder permissions or use 'Browse from disk'.")
+      alert("No supported images found. Supported formats: JPG, PNG, WebP, AVIF, TIFF.")
     }
   }
 
