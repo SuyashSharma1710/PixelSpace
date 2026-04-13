@@ -39,5 +39,6 @@ appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
-  provider: generic
-  url: https://github.com/SuyashSharma1710/PixelSpace/releases
+  provider: github
+  owner: SuyashSharma1710
+  repo: PixelSpace

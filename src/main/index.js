@@ -1,4 +1,5 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
+import { autoUpdater } from 'electron-updater'
 import { join, parse, resolve, extname } from 'path'
 import { access, mkdir, readdir, stat } from 'fs/promises'
 import sharp from 'sharp'
@@ -310,6 +311,24 @@ app.whenReady().then(() => {
   })
 
   createWindow()
+
+  // --- AUTO UPDATER ---
+  // Only check for updates in production — not during dev
+  if (!process.env['ELECTRON_RENDERER_URL']) {
+    autoUpdater.checkForUpdatesAndNotify()
+  }
+
+  autoUpdater.on('update-available', () => {
+    if (mainWindow) mainWindow.webContents.send('update_available')
+  })
+
+  autoUpdater.on('update-downloaded', () => {
+    if (mainWindow) mainWindow.webContents.send('update_downloaded')
+  })
+
+  ipcMain.handle('restart_app', () => {
+    autoUpdater.quitAndInstall()
+  })
 
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()

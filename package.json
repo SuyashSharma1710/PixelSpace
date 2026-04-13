@@ -1,6 +1,6 @@
 {
   "name": "PixelSpace",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "license": "MIT",
   "description": "A high-performance, strictly local Electron desktop app that crushes heavy images into WebP/AVIF using a C++ processing engine.",
   "main": "./out/main/index.js",
@@ -21,6 +21,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
+    "electron-updater": "^6.8.3",
     "sharp": "^0.34.5"
   },
   "devDependencies": {

@@ -26,10 +26,21 @@ function App() {
   const [outputDir, setOutputDir] = useState('')
   const [enableResizeInCompress, setEnableResizeInCompress] = useState(false)
 
+  // Auto-updater state
+  const [updateAvailable, setUpdateAvailable] = useState(false)
+  const [updateReady, setUpdateReady] = useState(false)
+
   // Wire up live progress listener
   useEffect(() => {
     window.electronAPI.onProgress((data) => setProgress(data))
     return () => window.electronAPI.removeProgressListener()
+  }, [])
+
+  // Wire up auto-updater listeners
+  useEffect(() => {
+    window.electronAPI.onUpdateAvailable(() => setUpdateAvailable(true))
+    window.electronAPI.onUpdateDownloaded(() => setUpdateReady(true))
+    // No cleanup needed — these fire at most once per session
   }, [])
 
   // Apply Theme to the DOM
@@ -515,6 +526,48 @@ function App() {
             </aside>
           </div>
         </>
+      )}
+
+      {/* --- AUTO-UPDATE BANNER --- */}
+      {updateAvailable && (
+        <div style={{
+          position: 'fixed',
+          bottom: 'var(--space-md)',
+          right: 'var(--space-md)',
+          zIndex: 999,
+          background: 'var(--panel-bg)',
+          border: '1px solid var(--panel-border)',
+          borderRadius: 'var(--radius-md)',
+          padding: 'var(--space-md)',
+          boxShadow: 'var(--shadow-md)',
+          minWidth: '280px',
+          maxWidth: '340px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 'var(--space-xs)'
+        }}>
+          <p style={{ margin: 0, fontWeight: 600, fontSize: 'var(--font-body)', color: 'var(--text-main)' }}>
+            Update Available 🚀
+          </p>
+          {updateReady ? (
+            <>
+              <p style={{ margin: 0, fontSize: 'var(--font-caption)', color: 'var(--text-muted)' }}>
+                A new version of PixelSpace is ready.
+              </p>
+              <button
+                className="button primary"
+                style={{ marginTop: 'var(--space-xs)' }}
+                onClick={() => window.electronAPI.restartApp()}
+              >
+                Restart &amp; Install
+              </button>
+            </>
+          ) : (
+            <p style={{ margin: 0, fontSize: 'var(--font-caption)', color: 'var(--text-muted)' }}>
+              Downloading new version in the background...
+            </p>
+          )}
+        </div>
       )}
     </div>
   )
