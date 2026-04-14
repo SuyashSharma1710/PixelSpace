@@ -13,9 +13,11 @@ const api = {
   removeProgressListener: () => ipcRenderer.removeAllListeners('optimizer:progress'),
 
   // --- AUTO UPDATER BRIDGE ---
-  onUpdateAvailable: (callback) => ipcRenderer.on('update_available', (_event) => callback()),
+  onUpdateAvailable: (callback) => ipcRenderer.on('update_available', (_event, info) => callback(info)),
   onUpdateDownloaded: (callback) => ipcRenderer.on('update_downloaded', (_event) => callback()),
+  downloadUpdate: () => ipcRenderer.invoke('download_update'),
   restartApp: () => ipcRenderer.invoke('restart_app'),
+  openReleasesPage: () => ipcRenderer.invoke('open_releases_page'),
 
   // THE FIX: Use Electron's native webUtils to securely extract the hidden OS path
   getFilePath: (file) => {

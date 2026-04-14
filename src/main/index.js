@@ -315,19 +315,28 @@ app.whenReady().then(() => {
   // --- AUTO UPDATER ---
   // Only check for updates in production — not during dev
   if (!process.env['ELECTRON_RENDERER_URL']) {
-    autoUpdater.checkForUpdatesAndNotify()
+    autoUpdater.autoDownload = false // Don't download silently — wait for user confirmation
+    autoUpdater.checkForUpdates()
   }
 
-  autoUpdater.on('update-available', () => {
-    if (mainWindow) mainWindow.webContents.send('update_available')
+  autoUpdater.on('update-available', (info) => {
+    if (mainWindow) mainWindow.webContents.send('update_available', { version: info.version })
   })
 
   autoUpdater.on('update-downloaded', () => {
     if (mainWindow) mainWindow.webContents.send('update_downloaded')
   })
 
+  ipcMain.handle('download_update', () => {
+    autoUpdater.downloadUpdate()
+  })
+
   ipcMain.handle('restart_app', () => {
     autoUpdater.quitAndInstall()
+  })
+
+  ipcMain.handle('open_releases_page', () => {
+    shell.openExternal('https://github.com/SuyashSharma1710/PixelSpace/releases')
   })
 
   app.on('activate', function () {

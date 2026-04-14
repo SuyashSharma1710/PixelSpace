@@ -28,7 +28,10 @@ function App() {
 
   // Auto-updater state
   const [updateAvailable, setUpdateAvailable] = useState(false)
+  const [updateVersion, setUpdateVersion] = useState('')
+  const [updateDownloading, setUpdateDownloading] = useState(false)
   const [updateReady, setUpdateReady] = useState(false)
+  const [updateDismissed, setUpdateDismissed] = useState(false)
 
   // Wire up live progress listener
   useEffect(() => {
@@ -38,9 +41,14 @@ function App() {
 
   // Wire up auto-updater listeners
   useEffect(() => {
-    window.electronAPI.onUpdateAvailable(() => setUpdateAvailable(true))
-    window.electronAPI.onUpdateDownloaded(() => setUpdateReady(true))
-    // No cleanup needed — these fire at most once per session
+    window.electronAPI.onUpdateAvailable((info) => {
+      setUpdateAvailable(true)
+      if (info?.version) setUpdateVersion(info.version)
+    })
+    window.electronAPI.onUpdateDownloaded(() => {
+      setUpdateDownloading(false)
+      setUpdateReady(true)
+    })
   }, [])
 
   // Apply Theme to the DOM
@@ -531,7 +539,7 @@ function App() {
       )}
 
       {/* --- AUTO-UPDATE BANNER --- */}
-      {updateAvailable && (
+      {updateAvailable && !updateDismissed && (
         <div style={{
           position: 'fixed',
           bottom: 'var(--space-md)',
@@ -542,19 +550,54 @@ function App() {
           borderRadius: 'var(--radius-md)',
           padding: 'var(--space-md)',
           boxShadow: 'var(--shadow-md)',
-          minWidth: '280px',
-          maxWidth: '340px',
+          minWidth: '300px',
+          maxWidth: '360px',
           display: 'flex',
           flexDirection: 'column',
           gap: 'var(--space-xs)'
         }}>
-          <p style={{ margin: 0, fontWeight: 600, fontSize: 'var(--font-body)', color: 'var(--text-main)' }}>
-            Update Available 🚀
+          {/* Header row */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <p style={{ margin: 0, fontWeight: 600, fontSize: 'var(--font-body)', color: 'var(--text-main)' }}>
+              Update Available 🚀
+            </p>
+            {!updateReady && !updateDownloading && (
+              <button
+                className="icon-button"
+                onClick={() => setUpdateDismissed(true)}
+                title="Dismiss"
+                style={{ padding: '2px 8px', fontSize: '16px' }}
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          {/* Version + What's New link */}
+          <p style={{ margin: 0, fontSize: 'var(--font-caption)', color: 'var(--text-muted)' }}>
+            {updateVersion ? `v${updateVersion} is available. ` : 'A new version is available. '}
+            <button
+              onClick={() => window.electronAPI.openReleasesPage()}
+              style={{
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                color: 'var(--primary-color)',
+                fontSize: 'var(--font-caption)',
+                fontWeight: 600,
+                cursor: 'pointer',
+                textDecoration: 'underline'
+              }}
+            >
+              What's new?
+            </button>
           </p>
+
+          {/* State-based action area */}
           {updateReady ? (
             <>
               <p style={{ margin: 0, fontSize: 'var(--font-caption)', color: 'var(--text-muted)' }}>
-                A new version of PixelSpace is ready.
+                Downloaded and ready to install.
               </p>
               <button
                 className="button primary"
@@ -564,10 +607,29 @@ function App() {
                 Restart &amp; Install
               </button>
             </>
-          ) : (
+          ) : updateDownloading ? (
             <p style={{ margin: 0, fontSize: 'var(--font-caption)', color: 'var(--text-muted)' }}>
-              Downloading new version in the background...
+              Downloading update in the background...
             </p>
+          ) : (
+            <div style={{ display: 'flex', gap: 'var(--space-xs)', marginTop: 'var(--space-xs)' }}>
+              <button
+                className="button primary"
+                style={{ flex: 1 }}
+                onClick={() => {
+                  setUpdateDownloading(true)
+                  window.electronAPI.downloadUpdate()
+                }}
+              >
+                Download Update
+              </button>
+              <button
+                className="button"
+                onClick={() => setUpdateDismissed(true)}
+              >
+                Later
+              </button>
+            </div>
           )}
         </div>
       )}
