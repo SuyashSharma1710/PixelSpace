@@ -271,9 +271,43 @@ body {
 }
 
 .layout-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* INNER TWO-COLUMN SPLIT inside a panel */
+.panel-body-grid {
   display: grid;
-  grid-template-columns: 1.25fr 0.95fr;
-  gap: var(--space-md); /* 24px */
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  align-items: start;
+}
+
+.panel-body-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.panel-body-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-left: 1px solid var(--panel-border);
+  padding-left: var(--space-md);
+}
+
+@media (max-width: 780px) {
+  .panel-body-grid {
+    grid-template-columns: 1fr;
+  }
+  .panel-body-right {
+    border-left: none;
+    border-top: 1px solid var(--panel-border);
+    padding-left: 0;
+    padding-top: var(--space-md);
+  }
 }
 
 /* CARDS / PANELS */
@@ -448,11 +482,24 @@ input[type='range'] {
   margin-bottom: var(--space-xs);
 }
 
-/* SUMMARY GRID — results panel (organism) */
+/* RESULTS INLINE LAYOUT — summary cards side by side */
 .summary-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-sm);
+}
+
+/* On wider screens, show results in a horizontal row */
+@media (min-width: 600px) {
+  .results-inline {
+    display: flex;
+    gap: var(--space-md);
+    align-items: flex-start;
+  }
+
+  .results-inline .summary-grid {
+    flex: 1;
+  }
 }
 
 .summary-grid article {
@@ -538,8 +585,19 @@ input[type='range'] {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes slide-in-results {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.results-panel {
+  animation: slide-in-results 0.3s ease-out;
+}
+
 @media (max-width: 980px) {
-  .layout-grid { grid-template-columns: 1fr; }
+  .results-inline {
+    flex-direction: column;
+  }
 }
 
 /* INPUT MODE TOGGLE (segmented control) */
