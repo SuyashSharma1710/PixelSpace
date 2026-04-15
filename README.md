@@ -5,7 +5,7 @@
   <p><strong>Blazing‑fast, privacy‑first local batch image optimizer and resizer built for professionals.</strong></p>
 
   <p>
-    <img src="https://img.shields.io/badge/version-v1.1.20-06b6d4?style=for-the-badge" alt="Version" />
+    <img src="https://img.shields.io/badge/version-v1.2.0-06b6d4?style=for-the-badge" alt="Version" />
     <img src="https://img.shields.io/badge/Electron-191970?style=for-the-badge&logo=Electron&logoColor=white" alt="Electron" />
     <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
     <img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" alt="NodeJS" />
