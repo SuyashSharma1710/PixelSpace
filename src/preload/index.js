@@ -6,15 +6,15 @@ const api = {
   selectOutputFolder: () => ipcRenderer.invoke('optimizer:select-output-folder'),
   openPath: (targetPath) => ipcRenderer.invoke('optimizer:open-path', targetPath),
   optimizeImages: (payload) => ipcRenderer.invoke('optimizer:optimize-images', payload),
-  
+
   onProgress: (callback) => {
-    ipcRenderer.on('optimizer:progress', (_event, data) => callback(data))
+    ipcRenderer.on('optimizer:progress', (_, data) => callback(data))
   },
   removeProgressListener: () => ipcRenderer.removeAllListeners('optimizer:progress'),
 
   // --- AUTO UPDATER BRIDGE ---
-  onUpdateAvailable: (callback) => ipcRenderer.on('update_available', (_event, info) => callback(info)),
-  onUpdateDownloaded: (callback) => ipcRenderer.on('update_downloaded', (_event) => callback()),
+  onUpdateAvailable: (callback) => ipcRenderer.on('update_available', (_, info) => callback(info)),
+  onUpdateDownloaded: (callback) => ipcRenderer.on('update_downloaded', () => callback()),
   downloadUpdate: () => ipcRenderer.invoke('download_update'),
   restartApp: () => ipcRenderer.invoke('restart_app'),
   openReleasesPage: () => ipcRenderer.invoke('open_releases_page'),
@@ -25,7 +25,7 @@ const api = {
       return webUtils.getPathForFile(file)
     }
     // Fallback for older versions
-    return file.path 
+    return file.path
   }
 }
 

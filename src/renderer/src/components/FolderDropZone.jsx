@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 function FolderDropZone({ onFolderSelected, onBrowse, disabled }) {
   const [isDragOver, setIsDragOver] = useState(false)
@@ -51,6 +52,12 @@ function FolderDropZone({ onFolderSelected, onBrowse, disabled }) {
       </button>
     </section>
   )
+}
+
+FolderDropZone.propTypes = {
+  onFolderSelected: PropTypes.func.isRequired,
+  onBrowse: PropTypes.func.isRequired,
+  disabled: PropTypes.bool
 }
 
 export default FolderDropZone

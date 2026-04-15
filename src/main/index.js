@@ -4,7 +4,7 @@ import { join, parse, resolve, extname } from 'path'
 import { access, mkdir, readdir, stat } from 'fs/promises'
 import sharp from 'sharp'
 import icon from '../../resources/icon.png?asset'
-import os from 'os' 
+import os from 'os'
 
 // --- PERFORMANCE OPTIMIZATIONS ---
 sharp.cache(false)
@@ -44,8 +44,10 @@ function sanitizeOptions(options) {
   const format = FORMAT_ALIASES[rawFormat] ?? rawFormat
   const outputFormat = format === 'original' || OUTPUT_FORMATS.has(format) ? format : 'original'
 
-  const outputDir = typeof options?.outputDir === 'string' && options.outputDir.trim().length > 0
-      ? resolve(options.outputDir.trim()) : ''
+  const outputDir =
+    typeof options?.outputDir === 'string' && options.outputDir.trim().length > 0
+      ? resolve(options.outputDir.trim())
+      : ''
 
   const parsedWidth = Number.parseInt(options?.width, 10)
   const width = Number.isFinite(parsedWidth) && parsedWidth > 0 ? parsedWidth : null
@@ -168,7 +170,8 @@ async function optimizeImage(sourcePath, options) {
 
   const optimizedStats = await stat(outputPath)
   const savedBytes = sourceStats.size - optimizedStats.size
-  const savingsPercent = sourceStats.size > 0 ? Number(((savedBytes / sourceStats.size) * 100).toFixed(2)) : 0
+  const savingsPercent =
+    sourceStats.size > 0 ? Number(((savedBytes / sourceStats.size) * 100).toFixed(2)) : 0
 
   return {
     status: 'success',
@@ -203,9 +206,9 @@ function createWindow() {
 
   // 2. Prevent keyboard shortcuts (F12, Ctrl+Shift+I, etc.)
   mainWindow.webContents.on('before-input-event', (event, input) => {
-    const isDevToolsKey = 
-      (input.control && input.shift && input.key.toLowerCase() === 'i') || 
-      (input.meta && input.alt && input.key.toLowerCase() === 'i') || 
+    const isDevToolsKey =
+      (input.control && input.shift && input.key.toLowerCase() === 'i') ||
+      (input.meta && input.alt && input.key.toLowerCase() === 'i') ||
       input.key === 'F12'
 
     if (isDevToolsKey) {
@@ -239,7 +242,9 @@ app.whenReady().then(() => {
     const selected = await dialog.showOpenDialog(mainWindow, {
       title: 'Select image files',
       properties: ['openFile', 'multiSelections'],
-      filters: [{ name: 'Images', extensions: ['jpg', 'jpeg', 'png', 'webp', 'avif', 'tif', 'tiff'] }]
+      filters: [
+        { name: 'Images', extensions: ['jpg', 'jpeg', 'png', 'webp', 'avif', 'tif', 'tiff'] }
+      ]
     })
     if (selected.canceled) return []
     return normalizeInputPaths(selected.filePaths)

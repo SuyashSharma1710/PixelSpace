@@ -10,9 +10,9 @@
   --space-xl: 48px;
 
   /* 2. RADIUS */
-  --radius-sm: 8px;   /* For buttons, inputs */
-  --radius-md: 12px;  /* For cards, panels */
-  --radius-lg: 16px;  /* For large hero sections */
+  --radius-sm: 8px; /* For buttons, inputs */
+  --radius-md: 12px; /* For cards, panels */
+  --radius-lg: 16px; /* For large hero sections */
 
   /* 3. TYPOGRAPHY (Modular Scale) */
   --font-caption: 14px;
@@ -26,23 +26,24 @@
 
   /* 5. TRANSITIONS */
   --transition-base: all 0.2s ease;
-  --transition-theme: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+  --transition-theme:
+    background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 
   /* 6. LAYOUT */
   --max-width-app: 1120px;
 
   /* LIGHT MODE - Clean SaaS */
-  --bg-main: #F8FAFC;
-  --panel-bg: #FFFFFF;
-  --panel-border: #E2E8F0;
-  --text-main: #0F172A;
-  --text-muted: #64748B;
-  --primary-color: #6366F1;
-  --primary-hover: #4F46E5;
-  --input-bg: #F1F5F9;
-  --button-bg: #FFFFFF;
-  --button-border: #E2E8F0;
-  --hero-bg: #FFFFFF;
+  --bg-main: #f8fafc;
+  --panel-bg: #ffffff;
+  --panel-border: #e2e8f0;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --primary-color: #6366f1;
+  --primary-hover: #4f46e5;
+  --input-bg: #f1f5f9;
+  --button-bg: #ffffff;
+  --button-border: #e2e8f0;
+  --hero-bg: #ffffff;
   --primary-glow: rgba(99, 102, 241, 0.15);
   --color-danger: #ef4444;
   --hero-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
@@ -51,14 +52,14 @@
 
 [data-theme='dark'] {
   /* DARK MODE - Intentional Monochromatic SaaS */
-  --bg-main: #0B0B0C;
+  --bg-main: #0b0b0c;
   --panel-bg: #161618;
   --panel-border: #262629;
-  --text-main: #FFFFFF;
-  --text-muted: #A1A1AA;
-  --primary-color: #6366F1;
-  --primary-hover: #5558E3;
-  --input-bg: #0B0B0C;
+  --text-main: #ffffff;
+  --text-muted: #a1a1aa;
+  --primary-color: #6366f1;
+  --primary-hover: #5558e3;
+  --input-bg: #0b0b0c;
   --button-bg: #161618;
   --button-border: #262629;
   --hero-bg: #161618;
@@ -86,13 +87,21 @@
 }
 
 @keyframes theme-fade-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 @keyframes theme-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 body {
@@ -263,7 +272,7 @@ select {
 /* --- COMPONENTS --- */
 .hero {
   position: relative;
-  overflow: hidden; 
+  overflow: hidden;
   background: var(--hero-bg);
   border: 1px solid var(--panel-border);
   border-radius: var(--radius-lg);
@@ -274,13 +283,15 @@ select {
   backdrop-filter: var(--glass-blur);
 }
 
-
 /* 1. The Moving Pixel Grid */
 .hero::before {
   content: '';
   position: absolute;
-  top: -50%; left: -50%; right: -50%; bottom: -50%;
-  background-image: 
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  background-image:
     linear-gradient(var(--panel-border) 1px, transparent 1px),
     linear-gradient(90deg, var(--panel-border) 1px, transparent 1px);
   background-size: 24px 24px;
@@ -295,11 +306,7 @@ select {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 50%,
-    rgba(6, 182, 212, 0.03) 51%
-  );
+  background: linear-gradient(to bottom, transparent 50%, rgba(6, 182, 212, 0.03) 51%);
   background-size: 100% 4px;
   z-index: -1;
   pointer-events: none;
@@ -429,16 +436,16 @@ select {
   background: rgba(99, 102, 241, 0.05);
 }
 
-.drop-zone-title { 
-  margin: 0; 
-  font-weight: 600; 
-  font-size: var(--font-body); 
+.drop-zone-title {
+  margin: 0;
+  font-weight: 600;
+  font-size: var(--font-body);
 }
 
-.drop-zone-subtitle { 
-  margin: 0; 
-  color: var(--text-muted); 
-  font-size: var(--font-caption); 
+.drop-zone-subtitle {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--font-caption);
 }
 
 /* FORMS & INPUTS */
@@ -470,7 +477,9 @@ input[type='number'] {
   transition: var(--transition-base);
 }
 
-select:focus, input[type='text']:focus, input[type='number']:focus {
+select:focus,
+input[type='text']:focus,
+input[type='number']:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2px var(--primary-glow);
 }
@@ -507,7 +516,7 @@ input[type='range'] {
 .button.primary {
   border: none;
   background: var(--primary-color);
-  color: #FFFFFF;
+  color: #ffffff;
   width: 100%;
   padding: 14px var(--space-sm);
   font-size: var(--font-body); /* 18px */
@@ -582,8 +591,12 @@ input[type='range'] {
   margin: 0;
 }
 
-.summary-success { color: var(--primary-color); }
-.summary-failure { color: var(--color-danger); }
+.summary-success {
+  color: var(--primary-color);
+}
+.summary-failure {
+  color: var(--color-danger);
+}
 
 /* COMING SOON PLACEHOLDER */
 .coming-soon-panel {
@@ -641,13 +654,25 @@ input[type='range'] {
 }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slide-in-results {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .results-panel {

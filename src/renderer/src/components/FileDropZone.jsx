@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const VALID_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'avif', 'tif', 'tiff'])
 
@@ -46,8 +47,8 @@ function FileDropZone({ onPathsAdded, onBrowse, disabled }) {
     } else {
       alert(
         'No supported images found in the dropped items.\n' +
-        'Supported formats: JPG, PNG, WebP, AVIF, TIFF.\n\n' +
-        'To process a whole folder, switch to "Select Folder" mode.'
+          'Supported formats: JPG, PNG, WebP, AVIF, TIFF.\n\n' +
+          'To process a whole folder, switch to "Select Folder" mode.'
       )
     }
   }
@@ -66,6 +67,12 @@ function FileDropZone({ onPathsAdded, onBrowse, disabled }) {
       </button>
     </section>
   )
+}
+
+FileDropZone.propTypes = {
+  onPathsAdded: PropTypes.func.isRequired,
+  onBrowse: PropTypes.func.isRequired,
+  disabled: PropTypes.bool
 }
 
 export default FileDropZone

@@ -1,13 +1,13 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const VALID_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'avif', 'tif', 'tiff'])
 
 function isValidImageEntry(name) {
-  if (!name || name.startsWith('.')) return false 
+  if (!name || name.startsWith('.')) return false
   const ext = name.split('.').pop().toLowerCase()
   return VALID_EXTENSIONS.has(ext)
 }
-
 
 async function readAllEntries(reader) {
   const allEntries = []
@@ -20,7 +20,6 @@ async function readAllEntries(reader) {
   }
   return allEntries
 }
-
 
 async function collectPathsFromEntry(entry, collectedPaths) {
   if (entry.isFile) {
@@ -74,7 +73,7 @@ function DropZone({ onPathsAdded, onBrowse, disabled }) {
     if (collectedPaths.length > 0) {
       onPathsAdded(collectedPaths)
     } else {
-      alert("No supported images found. Supported formats: JPG, PNG, WebP, AVIF, TIFF.")
+      alert('No supported images found. Supported formats: JPG, PNG, WebP, AVIF, TIFF.')
     }
   }
 
@@ -92,6 +91,12 @@ function DropZone({ onPathsAdded, onBrowse, disabled }) {
       </button>
     </section>
   )
+}
+
+DropZone.propTypes = {
+  onPathsAdded: PropTypes.func.isRequired,
+  onBrowse: PropTypes.func.isRequired,
+  disabled: PropTypes.bool
 }
 
 export default DropZone
