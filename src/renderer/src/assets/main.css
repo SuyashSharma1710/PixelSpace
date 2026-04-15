@@ -26,7 +26,7 @@
 
   /* 5. TRANSITIONS */
   --transition-base: all 0.2s ease;
-  --transition-theme: background-color 0.3s ease, color 0.3s ease;
+  --transition-theme: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 
   /* 6. LAYOUT */
   --max-width-app: 1120px;
@@ -69,16 +69,76 @@
 }
 
 /* --- BASE STYLES --- */
+
+/* View Transition — theme switch animation */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.45s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+::view-transition-old(root) {
+  animation-name: theme-fade-out;
+}
+
+::view-transition-new(root) {
+  animation-name: theme-fade-in;
+}
+
+@keyframes theme-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes theme-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 body {
   margin: 0;
   padding: 0 var(--space-md) var(--space-md) var(--space-md);
   overflow: auto;
   color: var(--text-main);
   background: var(--bg-main);
-  font-family: 'Inter', 'Space Grotesk', system-ui, sans-serif; /* Inter is great for SaaS */
+  font-family: 'Inter', 'Space Grotesk', system-ui, sans-serif;
   font-size: var(--font-body);
-  transition: var(--transition-theme);
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease;
   min-height: 100vh;
+}
+
+/* Smooth transition on ALL themed elements */
+*,
+*::before,
+*::after {
+  transition:
+    background-color 0.4s ease,
+    border-color 0.4s ease,
+    color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+/* But keep interaction transitions snappy — override back to fast for hover/focus */
+.button,
+.icon-button,
+.nav-item,
+.mode-btn,
+.theme-toggle,
+.toggle-row,
+.toggle-track,
+.drop-zone,
+.output-location,
+input,
+select {
+  transition:
+    background-color 0.4s ease,
+    border-color 0.4s ease,
+    color 0.4s ease,
+    box-shadow 0.4s ease,
+    transform 0.15s ease,
+    opacity 0.15s ease;
 }
 
 #root {

@@ -57,7 +57,16 @@ function App() {
   }, [theme])
 
   const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light')
+    const next = theme === 'light' ? 'dark' : 'light'
+
+    // Use View Transitions API for a smooth cross-fade if supported (Electron/Chromium always has it)
+    if (document.startViewTransition) {
+      document.startViewTransition(() => {
+        setTheme(next)
+      })
+    } else {
+      setTheme(next)
+    }
   }
 
   // Handle Drag & Drop
